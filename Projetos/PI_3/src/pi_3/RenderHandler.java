@@ -21,17 +21,31 @@ public class RenderHandler {
 		//Create an array for pixels
 		pixels = ((DataBufferInt) view.getRaster().getDataBuffer()).getData();
                 
-                for(int heigthIndex = 0; heigthIndex < height; heigthIndex++) {
-                    int randomPixel = (int)(Math.random() * 0xFFFFFF);
-                    
-                    for(int widthIndex = 0; widthIndex < width; widthIndex++ ){
-                        pixels[heigthIndex*width + widthIndex] = randomPixel;
-                    }
-		}
+//                for(int heigthIndex = 0; heigthIndex < height; heigthIndex++) {
+//                    int randomPixel = (int)(Math.random() * 0xFFFFFF);
+//
+//                    for(int widthIndex = 0; widthIndex < width; widthIndex++ ){
+//                        pixels[heigthIndex*width + widthIndex] = randomPixel;
+//                    }
+//                }
 	}
 
+        // Renderuza o array de pixels na tela
 	public void render(Graphics graphics) {
 		graphics.drawImage(view, 0, 0, view.getWidth(), view.getHeight(), null);
 	}
+        
+        // Renderiza uma imagem e sua posição na tela
+        public void renderImage(BufferedImage image, int xPosition, int yPosition, int xZoom, int yZoom) {
+            int[] imagePixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+            
+            for(int y = 0; y < image.getHeight(); y++) 
+                for(int x = 0; x < image.getWidth(); x++) 
+                    for(int yZoomPos = 0; yZoomPos < yZoom; yZoomPos++) 
+                        for(int xZoomPos = 0; xZoomPos < xZoom; xZoomPos++) 
+                             pixels[((x * xZoom) + xPosition + xZoomPos) + ((y * yZoom) + yPosition + yZoomPos) * view.getWidth()] = imagePixels[x + y * image.getWidth()];
+                
+            
+        }
 
 }

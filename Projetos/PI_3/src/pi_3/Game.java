@@ -8,14 +8,22 @@ package pi_3;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.image.BufferStrategy;
-import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.awt.Graphics; 
+
 import java.lang.Runnable;
 import java.lang.Thread;
+
 import javax.swing.JFrame;
+
+import javax.imageio.ImageIO;
+
+import java.io.IOException;
 
 public class Game extends JFrame implements Runnable {
 	private Canvas canvas = new Canvas();
 	private RenderHandler renderer;
+        private BufferedImage testImage;
 
 	public Game() {
 		//Make our program shutdown when we exit out.
@@ -38,6 +46,8 @@ public class Game extends JFrame implements Runnable {
 
 		renderer = new RenderHandler(getWidth(), getHeight());
 
+                testImage = loadImage("Asets.png");
+                
 	}
 
 	
@@ -45,16 +55,30 @@ public class Game extends JFrame implements Runnable {
 
 	}
 
+        private BufferedImage loadImage(String path) {
+            try {
+                BufferedImage loadedImage = ImageIO.read(Game.class.getResource(path));
+                BufferedImage formattedImage = new BufferedImage(loadedImage.getWidth(), loadedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+                formattedImage.getGraphics().drawImage(loadedImage, 0, 0, null);
+                
+                return loadedImage;
+            } 
+            catch(IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
 
 	public void render() {
-			BufferStrategy bufferStrategy = canvas.getBufferStrategy();
-			Graphics graphics = bufferStrategy.getDrawGraphics();
-			super.paint(graphics);
+            BufferStrategy bufferStrategy = canvas.getBufferStrategy();
+            Graphics graphics = bufferStrategy.getDrawGraphics();
+            super.paint(graphics);
 
-			renderer.render(graphics);
+            renderer.renderImage(testImage, 0, 0, 16, 16);
+            renderer.render(graphics);
 
-			graphics.dispose();
-			bufferStrategy.show();
+            graphics.dispose();
+            bufferStrategy.show();
 	}
 
 	public void run() {
