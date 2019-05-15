@@ -46,7 +46,7 @@ public class Game extends JFrame implements Runnable {
 
 		renderer = new RenderHandler(getWidth(), getHeight());
 
-                testImage = loadImage("Asets.png");
+                testImage = loadImage("GrassTile.png");
                 
 	}
 

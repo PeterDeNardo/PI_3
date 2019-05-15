@@ -12,40 +12,53 @@ import java.awt.image.DataBufferInt;
 
 public class RenderHandler {
 	private BufferedImage view;
-	private int[] pixels;
+	private Rectangle camera;
+        private int[] pixels;
 
 	public RenderHandler(int width, int height) {
-		//Create a BufferedImage that will represent our view.
-		view = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            //Create a BufferedImage that will represent our view.
+            view = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
-		//Create an array for pixels
-		pixels = ((DataBufferInt) view.getRaster().getDataBuffer()).getData();
+            camera = new Rectangle(0, 0, width, height);
+
+            //Create an array for pixels
+            pixels = ((DataBufferInt) view.getRaster().getDataBuffer()).getData();
                 
-//                for(int heigthIndex = 0; heigthIndex < height; heigthIndex++) {
-//                    int randomPixel = (int)(Math.random() * 0xFFFFFF);
-//
-//                    for(int widthIndex = 0; widthIndex < width; widthIndex++ ){
-//                        pixels[heigthIndex*width + widthIndex] = randomPixel;
-//                    }
-//                }
-	}
-
+        }
+        
         // Renderuza o array de pixels na tela
 	public void render(Graphics graphics) {
-		graphics.drawImage(view, 0, 0, view.getWidth(), view.getHeight(), null);
+            graphics.drawImage(view, 0, 0, view.getWidth(), view.getHeight(), null);
 	}
         
         // Renderiza uma imagem e sua posição na tela
         public void renderImage(BufferedImage image, int xPosition, int yPosition, int xZoom, int yZoom) {
             int[] imagePixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
-            
-            for(int y = 0; y < image.getHeight(); y++) 
-                for(int x = 0; x < image.getWidth(); x++) 
+            renderArray(imagePixels, image.getWidth(), image.getHeight(), xPosition, yPosition, xZoom, yZoom);
+        }
+        
+        public void renderRectangle(Rectangle rec, int xZoom, int yZoom) {
+            int[] recPixels = rec.getPixels();
+            if(recPixels != null) {
+                renderArray(recPixels, rec.width, rec.height, rec.x, rec.y, xZoom, yZoom);
+            }
+        }
+        
+        public void renderArray(int[] renderPixels, int renderWidth, int renderHeight, int xPosition, int yPosition, int xZoom, int yZoom) {
+            for(int y = 0; y < renderHeight; y++) 
+                for(int x = 0; x < renderWidth; x++) 
                     for(int yZoomPos = 0; yZoomPos < yZoom; yZoomPos++) 
                         for(int xZoomPos = 0; xZoomPos < xZoom; xZoomPos++) 
-                             pixels[((x * xZoom) + xPosition + xZoomPos) + ((y * yZoom) + yPosition + yZoomPos) * view.getWidth()] = imagePixels[x + y * image.getWidth()];
-                
-            
+                             setPixel(renderPixels[x + y * renderWidth], (x*xZoom) + xPosition + xZoomPos, ((y * yZoom) + yPosition + yZoomPos));
+  
+        }
+        
+        private void setPixel(int pixel, int x, int y){
+            if (x >= camera.x && y >= camera.y && x <= camera.x + camera.width && y <= camera.y + camera.height ) {
+                int pixelIndex = x + y * view.getWidth();
+                if(pixels.length > pixelIndex)
+                    pixels[pixelIndex] = pixel;
+           }
         }
 
 }
