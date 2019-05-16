@@ -1,15 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package pi_3;
-
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import java.awt.Graphics; 
+import java.awt.Graphics;
 
 import java.lang.Runnable;
 import java.lang.Thread;
@@ -19,13 +12,20 @@ import javax.swing.JFrame;
 import javax.imageio.ImageIO;
 
 import java.io.IOException;
+import java.io.File;
 
 public class Game extends JFrame implements Runnable {
+
+	public static int alpha = 0xFFACC58B;
+
 	private Canvas canvas = new Canvas();
 	private RenderHandler renderer;
-        private BufferedImage testImage;
+	private BufferedImage testImage;
+	private Sprite testSprite;
+	private SpriteSheet sheet;
+	private Rectangle testRectangle = new Rectangle(30, 30, 100, 100);
 
-	public Game() {
+	public Game(){
 		//Make our program shutdown when we exit out.
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -46,39 +46,51 @@ public class Game extends JFrame implements Runnable {
 
 		renderer = new RenderHandler(getWidth(), getHeight());
 
-                testImage = loadImage("GrassTile.png");
                 
+                File file = new File("pi_3/Asets.png");
+                String path = file.getPath();
+		BufferedImage sheetImage = loadImage(path);
+		sheet = new SpriteSheet(sheetImage);
+		sheet.loadSprites(16, 16);
+                
+                testSprite = sheet.getSprite(1,4);
+                
+           
+		testRectangle.generateGraphics(2, 12234);
 	}
 
 	
-	public void update() {
+	public void update(){
 
 	}
 
-        private BufferedImage loadImage(String path) {
-            try {
-                BufferedImage loadedImage = ImageIO.read(Game.class.getResource(path));
-                BufferedImage formattedImage = new BufferedImage(loadedImage.getWidth(), loadedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
-                formattedImage.getGraphics().drawImage(loadedImage, 0, 0, null);
-                
-                return loadedImage;
-            } 
-            catch(IOException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
+
+	private BufferedImage loadImage(String path) {
+		try {
+			BufferedImage loadedImage = ImageIO.read(Game.class.getResource(path));
+			BufferedImage formattedImage = new BufferedImage(loadedImage.getWidth(), loadedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+			formattedImage.getGraphics().drawImage(loadedImage, 0, 0, null);
+
+			return formattedImage;
+		}
+		catch(IOException exception) {
+			exception.printStackTrace();
+			return null;
+		}
+	}
+
 
 	public void render() {
-            BufferStrategy bufferStrategy = canvas.getBufferStrategy();
-            Graphics graphics = bufferStrategy.getDrawGraphics();
-            super.paint(graphics);
+			BufferStrategy bufferStrategy = canvas.getBufferStrategy();
+			Graphics graphics = bufferStrategy.getDrawGraphics();
+			super.paint(graphics);
 
-            renderer.renderImage(testImage, 0, 0, 16, 16);
-            renderer.render(graphics);
+			renderer.renderSprite(testSprite, 0, 0, 5, 5);
+			renderer.renderRectangle(testRectangle, 1, 1);
+			renderer.render(graphics);
 
-            graphics.dispose();
-            bufferStrategy.show();
+			graphics.dispose();
+			bufferStrategy.show();
 	}
 
 	public void run() {
@@ -98,10 +110,10 @@ public class Game extends JFrame implements Runnable {
 				update();
 				changeInSeconds--;
 			}
-
 			render();
 			lastTime = now;
 		}
+
 	}
 
 	public static void main(String[] args) {
