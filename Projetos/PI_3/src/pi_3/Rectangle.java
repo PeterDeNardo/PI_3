@@ -1,3 +1,5 @@
+package pi_3;
+
 public class Rectangle {
 	public int x,y,w,h;
 	private int[] pixels;

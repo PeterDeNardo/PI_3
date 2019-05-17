@@ -1,3 +1,5 @@
+package pi_3;
+
 import java.awt.image.BufferedImage;
 
 public class Sprite {

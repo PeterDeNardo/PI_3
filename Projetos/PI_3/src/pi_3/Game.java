@@ -1,3 +1,5 @@
+package pi_3;
+
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.image.BufferStrategy;
@@ -21,11 +23,15 @@ public class Game extends JFrame implements Runnable {
 	private Canvas canvas = new Canvas();
 	private RenderHandler renderer;
 	private BufferedImage testImage;
+        
 	private Sprite testSprite;
 	private SpriteSheet sheet;
+        
 	private Rectangle testRectangle = new Rectangle(30, 30, 100, 100);
+        
+        private Tiles tiles;
 
-	public Game(){
+	public Game() throws IOException{
 		//Make our program shutdown when we exit out.
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -46,14 +52,24 @@ public class Game extends JFrame implements Runnable {
 
 		renderer = new RenderHandler(getWidth(), getHeight());
 
-                
-                File file = new File("pi_3/Asets.png");
+                //Load Assets;
+                File file = new File("Asets.png");
                 String path = file.getPath();
 		BufferedImage sheetImage = loadImage(path);
+                
 		sheet = new SpriteSheet(sheetImage);
 		sheet.loadSprites(16, 16);
                 
-                testSprite = sheet.getSprite(1,4);
+                File testFile = new File("./src/pi_3/Tiles.txt");
+                if(testFile.createNewFile()){
+                    System.out.println("yeeey");
+                } else {
+                    System.out.println("Deu certo carregar o Tiles.txt");
+            }
+                //tiles = new Tiles(new File("Tilses.txt"), sheet);
+                tiles = new Tiles(testFile, sheet);
+                
+                //testSprite = sheet.getSprite(1,4);
                 
            
 		testRectangle.generateGraphics(2, 12234);
@@ -85,7 +101,8 @@ public class Game extends JFrame implements Runnable {
 			Graphics graphics = bufferStrategy.getDrawGraphics();
 			super.paint(graphics);
 
-			renderer.renderSprite(testSprite, 0, 0, 5, 5);
+			//renderer.renderSprite(testSprite, 0, 0, 5, 5);
+                        tiles.RenderTile(1, renderer, 0, 0, 3, 3);
 			renderer.renderRectangle(testRectangle, 1, 1);
 			renderer.render(graphics);
 
@@ -116,7 +133,7 @@ public class Game extends JFrame implements Runnable {
 
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		Game game = new Game();
 		Thread gameThread = new Thread(game);
 		gameThread.start();

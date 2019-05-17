@@ -1,3 +1,5 @@
+package pi_3;
+
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
