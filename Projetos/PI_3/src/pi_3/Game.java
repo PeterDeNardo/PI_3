@@ -30,6 +30,7 @@ public class Game extends JFrame implements Runnable {
 	private Rectangle testRectangle = new Rectangle(30, 30, 100, 100);
         
         private Tiles tiles;
+        private Map map;
 
 	public Game() throws IOException{
 		//Make our program shutdown when we exit out.
@@ -69,6 +70,8 @@ public class Game extends JFrame implements Runnable {
                 //tiles = new Tiles(new File("Tilses.txt"), sheet);
                 tiles = new Tiles(testFile, sheet);
                 
+                map = new Map(new File("./src/pi_3/Map.txt"),tiles);
+                
                 //testSprite = sheet.getSprite(1,4);
                 
            
@@ -102,7 +105,8 @@ public class Game extends JFrame implements Runnable {
 			super.paint(graphics);
 
 			//renderer.renderSprite(testSprite, 0, 0, 5, 5);
-                        tiles.RenderTile(1, renderer, 0, 0, 3, 3);
+                        //tiles.RenderTile(1, renderer, 0, 0, 3, 3);
+                        map.render(renderer, 3, 3);
 			renderer.renderRectangle(testRectangle, 1, 1);
 			renderer.render(graphics);
 
