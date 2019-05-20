@@ -1,14 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package pi_3;
 
-/**
- *
- * @author peterdenardo
- */
-public class GameObject {
-    
+public interface GameObject {
+
+    //Call every time physically possible.
+    public void render(RenderHandler renderer, int xZoom, int yZoom);
+
+    //Call at 60 fps rate.
+    public void update(Game game);
 }

@@ -46,5 +46,5 @@ public class Tiles {
             this.tileName = tileName;
             this.sprite = sprite;
         }
-    } 
+    }        
 }

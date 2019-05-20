@@ -2,20 +2,27 @@ package pi_3;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 
 import java.util.Scanner;
-import java.util.ArrayList;        
+import java.util.ArrayList;   
+import java.util.HashMap;
 
 public class Map {
     private Tiles tileSet;
     private int fillTileID = -1;
+    private File mapFile;
     
     private ArrayList<MappedTile> mappedTiles = new ArrayList<MappedTile>();
+    private HashMap<Integer, String> comments = new HashMap<Integer, String>();
 
     public Map(File mapFile, Tiles tileSet) {
         this.tileSet = tileSet;
+        this.mapFile = mapFile;
+        
         try {
             Scanner scanner = new Scanner(mapFile);
+            int currentLine = 0;
             while(scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 if(!line.startsWith("//")) {
@@ -35,10 +42,74 @@ public class Map {
                         mappedTiles.add(mappedTile);
                     }
                 }
+                else {
+                    comments.put(currentLine, line);
+                }
+                
+                currentLine++;
             }
         } catch (FileNotFoundException e) {
             
         }
+    }
+    
+    public void setTile(int tileX, int tileY, int tileID) {
+        boolean foundTile = false;
+        
+        for(int i = 0; i < mappedTiles.size(); i++) {
+            MappedTile mappedTile = mappedTiles.get(i);
+            if(mappedTile.x == tileX && mappedTile.y == tileY) {
+                mappedTile.id = tileID;
+                break;
+            }
+        }
+        
+        if(!foundTile) {
+            mappedTiles.add(new MappedTile(tileID, tileX, tileY));
+        }
+    }
+    
+    public void removeTile(int tileX, int tileY) {
+        for (int i = 0; i < mappedTiles.size(); i++) {
+            MappedTile mappedTile = mappedTiles.get(i);
+            if (mappedTile.x == tileX && mappedTile.y == tileY) {
+                mappedTiles.remove(i);
+            }
+        }
+    }
+    
+    public void saveMap() {
+        try {
+            int currentLine = 0;
+            if(mapFile.exists()) {
+                mapFile.delete();
+            }
+            mapFile.createNewFile();
+            
+            PrintWriter printWriter = new PrintWriter(mapFile);
+            
+            if(fillTileID >= 0) {
+                if (comments.containsKey(currentLine)) {
+                    printWriter.println(comments.get(currentLine));
+                    currentLine++;
+                }
+                printWriter.println("Fill:" + fillTileID);
+            }
+            
+            for(int i = 0; i < mappedTiles.size(); i++) {
+                if(comments.containsKey(currentLine)) {
+                    printWriter.println(comments.get(currentLine));
+                }
+                MappedTile tile = mappedTiles.get(i);
+                printWriter.println(tile.id + "," + tile.x + "," + tile.y);
+                currentLine++;
+            }
+            printWriter.close();
+            
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+        }
+    
     }
     
     public void render(RenderHandler render, int xZoom, int yZoom) {

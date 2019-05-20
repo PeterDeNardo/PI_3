@@ -2,6 +2,7 @@ package pi_3;
 
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
@@ -22,15 +23,24 @@ public class Game extends JFrame implements Runnable {
 
     private Canvas canvas = new Canvas();
     private RenderHandler renderer;
-    private BufferedImage testImage;
-
-    private Sprite testSprite;
+    
     private SpriteSheet sheet;
+    private SpriteSheet playerSheet;
 
     private Rectangle testRectangle = new Rectangle(30, 30, 100, 100);
 
     private Tiles tiles;
     private Map map;
+    
+    private KeyBoardListener keyListener = new KeyBoardListener(this);
+    private MouseEventListener mouseListener = new MouseEventListener(this);
+    
+    private GameObject objects[];
+    
+    private Player player;
+    
+    private int xZoom = 3;
+    private int yZoom = 3;
 
     public Game() throws IOException{
         //Make our program shutdown when we exit out.
@@ -60,7 +70,19 @@ public class Game extends JFrame implements Runnable {
 
         sheet = new SpriteSheet(sheetImage);
         sheet.loadSprites(16, 16);
+        
+        File file2 = new File("Sprites.png");
+        String path2 = file2.getPath();
+        BufferedImage playerSheetImage = loadImage(path2);
+        
+        playerSheet = new SpriteSheet(playerSheetImage);
+        playerSheet.loadSprites(16, 16);
+        
+        
+        //Player Animated Sprites
+        AnimatedSprite playerAnimations = new AnimatedSprite(playerSheet, 10);
 
+        // Load Map and Tiles
         File testFile = new File("./src/pi_3/Tiles.txt");
         if(testFile.createNewFile()){
             System.out.println("yeeey");
@@ -71,16 +93,24 @@ public class Game extends JFrame implements Runnable {
         tiles = new Tiles(testFile, sheet);
 
         map = new Map(new File("./src/pi_3/Map.txt"),tiles);
-
-        //testSprite = sheet.getSprite(1,4);
-
-
-        testRectangle.generateGraphics(2, 12234);
+    
+        //Objetos
+        objects = new GameObject[1];
+        player = new Player(playerAnimations);
+        objects[0] = player;
+        
+        //Add Listeners
+        canvas.addKeyListener(keyListener);
+        canvas.addFocusListener(keyListener);
+        canvas.addMouseListener(mouseListener);
+        canvas.addMouseMotionListener(mouseListener);
     }
 
 
     public void update(){
-
+        for (int i = 0; i < objects.length; i++) {
+            objects[i].update(this);
+        }
     }
 
 
@@ -98,20 +128,40 @@ public class Game extends JFrame implements Runnable {
         }
     }
 
-
+    public void handleCTRL(boolean[] keys) {
+        if(keys[KeyEvent.VK_S]){
+            map.saveMap();
+        }
+    }
+    
+    public void leftClick(int x, int y) {
+        x = (int) Math.floor((x + renderer.getCamera().x)/(16.0 * xZoom));
+        y = (int) Math.floor((y + renderer.getCamera().y)/(16.0 * yZoom));
+        map.setTile(x, y, 2);
+    }
+    
+    public void rightClick(int x, int y) {
+        x = (int) Math.floor((x + renderer.getCamera().x)/(16.0 * xZoom));
+        y = (int) Math.floor((y + renderer.getCamera().y)/(16.0 * yZoom));
+        map.removeTile(x, y);
+    }
+    
     public void render() {
         BufferStrategy bufferStrategy = canvas.getBufferStrategy();
         Graphics graphics = bufferStrategy.getDrawGraphics();
         super.paint(graphics);
-
-        //renderer.renderSprite(testSprite, 0, 0, 5, 5);
-        //tiles.RenderTile(1, renderer, 0, 0, 3, 3);
-        map.render(renderer, 3, 3);
-        renderer.renderRectangle(testRectangle, 1, 1);
+ 
+        map.render(renderer, xZoom, yZoom);
+        
+        for (int i = 0; i < objects.length; i++) {
+            objects[i].render(renderer, xZoom, yZoom);
+        }
+        
         renderer.render(graphics);
 
         graphics.dispose();
         bufferStrategy.show();
+        renderer.clear();
     }
 
     public void run() {
@@ -133,6 +183,9 @@ public class Game extends JFrame implements Runnable {
             }
             render();
             lastTime = now;
+            
+            //Clear the view
+            renderer.clear();
         }
 
     }
@@ -143,4 +196,15 @@ public class Game extends JFrame implements Runnable {
         gameThread.start();
     }
 
+    public KeyBoardListener getKeyListener() {
+        return keyListener;
+    }
+    
+    public MouseEventListener getMouseListener() {
+        return mouseListener;
+    }
+    
+    public RenderHandler getRender() {
+        return renderer;
+    }
 }
