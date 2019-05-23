@@ -7,6 +7,8 @@ import java.io.PrintWriter;
 import java.util.Scanner;
 import java.util.ArrayList;   
 import java.util.HashMap;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Map {
     private Tiles tileSet;
@@ -45,10 +47,52 @@ public class Map {
                 else {
                     comments.put(currentLine, line);
                 }
-                
                 currentLine++;
             }
         } catch (FileNotFoundException e) {
+            
+        }
+        
+        Collections.sort(mappedTiles, new Comparator() {
+            public int compare(Object o1, Object o2) {
+                MappedTile t1 = (MappedTile) o1;
+                MappedTile t2 = (MappedTile) o2;
+                return t1.y < t2.y ? -1 : (t1.y > t2.y ? +1 : 0);
+            }
+        });
+        
+        ArrayList<MappedTile> orgTiles = new ArrayList<MappedTile>(); 
+        ArrayList<MappedTile> cloneTiles = new ArrayList<MappedTile>(mappedTiles); 
+        mappedTiles.clear();
+        
+        int cont = 0;
+        
+        for (int i = 0; i < cloneTiles.size(); i++) {
+            orgTiles.add(cloneTiles.get(i));
+            if (cont > 6) {
+                Collections.sort(orgTiles, new Comparator() {
+                    public int compare(Object o1, Object o2) {
+                        MappedTile t1 = (MappedTile) o1;
+                        MappedTile t2 = (MappedTile) o2;
+                        return t1.x < t2.x ? -1 : (t1.x > t2.x ? +1 : 0);
+                    }
+                });
+                for (MappedTile e : orgTiles){
+                    System.out.println(orgTiles.size() + " :: y :: " + e.y + " :: x :: " + e.x);
+                }
+                mappedTiles.addAll(orgTiles);
+                orgTiles.clear();
+            }
+            cont++;
+        }
+        
+        mappedTiles = (ArrayList<MappedTile>)orgTiles.clone();
+
+       
+    }
+    
+    public void orgnizeArrayList(int h, int w) {
+        for(int i = 0; i <= h; i++) {
             
         }
     }
@@ -140,5 +184,7 @@ public class Map {
             this.y = y;
         }
     }
+    
+    
     
 }
