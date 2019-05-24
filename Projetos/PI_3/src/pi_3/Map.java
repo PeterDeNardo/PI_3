@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 
 import java.util.Scanner;
 import java.util.ArrayList;   
+import java.util.List;
 import java.util.HashMap;
 import java.util.Collections;
 import java.util.Comparator;
@@ -38,7 +39,8 @@ public class Map {
                     
                     String[] splitString = line.split(",");
                     if(splitString.length >= 3) {
-                        MappedTile mappedTile = new MappedTile(Integer.parseInt(splitString[0]),
+                        MappedTile mappedTile = new MappedTile(/*mappedTiles.size() +1,*/
+                                                               Integer.parseInt(splitString[0]),
                                                                Integer.parseInt(splitString[1]),
                                                                Integer.parseInt(splitString[2]));
                         mappedTiles.add(mappedTile);
@@ -68,8 +70,9 @@ public class Map {
         int cont = 0;
         
         for (int i = 0; i < cloneTiles.size(); i++) {
+            cont++;
             orgTiles.add(cloneTiles.get(i));
-            if (cont > 6) {
+            if (cont == 6) {
                 Collections.sort(orgTiles, new Comparator() {
                     public int compare(Object o1, Object o2) {
                         MappedTile t1 = (MappedTile) o1;
@@ -77,18 +80,18 @@ public class Map {
                         return t1.x < t2.x ? -1 : (t1.x > t2.x ? +1 : 0);
                     }
                 });
-                for (MappedTile e : orgTiles){
-                    System.out.println(orgTiles.size() + " :: y :: " + e.y + " :: x :: " + e.x);
-                }
                 mappedTiles.addAll(orgTiles);
                 orgTiles.clear();
+                cont = 0;
             }
-            cont++;
         }
-        
-        mappedTiles = (ArrayList<MappedTile>)orgTiles.clone();
 
-       
+        int id = 1;
+        for (MappedTile e : mappedTiles){
+            e.setId(id);
+            id++;
+            System.out.println(mappedTiles.size() + " :: y :: " + e.y + " :: x :: " + e.x +" :: "+ e.id);
+        } 
     }
     
     public void orgnizeArrayList(int h, int w) {
@@ -99,11 +102,11 @@ public class Map {
     
     public void setTile(int tileX, int tileY, int tileID) {
         boolean foundTile = false;
-        
+        //int id = mappedTiles.size()  + 1;
         for(int i = 0; i < mappedTiles.size(); i++) {
             MappedTile mappedTile = mappedTiles.get(i);
             if(mappedTile.x == tileX && mappedTile.y == tileY) {
-                mappedTile.id = tileID;
+                mappedTile.tileId = tileID;
                 break;
             }
         }
@@ -171,17 +174,57 @@ public class Map {
         }
         for(int tileIndex = 0; tileIndex < mappedTiles.size(); tileIndex++) {
             MappedTile mappedTile = mappedTiles.get(tileIndex);
-            tileSet.RenderTile(mappedTile.id, render, mappedTile.x * tileWidth, mappedTile.y * tileHeight, xZoom, yZoom);
+            tileSet.RenderTile(mappedTile.tileId, render, mappedTile.x * tileWidth, mappedTile.y * tileHeight, xZoom, yZoom);
         }
     }
     
     class MappedTile {
-        public int id, x, y;
+        public int id, tileId, x, y;
+        private boolean bloqueado, visitado;
+        private MappedTile pai;
+        public  List<MappedTile> vizinhos = new ArrayList();
+
         
-        public MappedTile(int id, int x, int y) {
-            this.id = id;
+        public MappedTile(int tileId, int x, int y) {
+            this.tileId = tileId;
             this.x = x;
             this.y = y;
+        }
+        
+        public void setId(int id) {
+            this.id = id;
+        }
+        
+        public MappedTile getPai() {
+            return pai;
+        }
+
+        public void setPai(MappedTile pai) {
+            this.pai = pai;
+        }
+        
+        public boolean isVisitado() {
+            return visitado;
+        }
+
+        public void setVisitado(boolean visitado) {
+            this.visitado = visitado;
+        }
+        
+        public List<MappedTile> getVizinhos() {
+            return vizinhos;
+        }
+
+        public int getId() {
+            return id;
+        }
+        
+        public boolean estaBloqueado() {
+            return bloqueado;
+        }
+
+        public void setBloqueado(boolean bloqueado) {
+            this.bloqueado = bloqueado;
         }
     }
     
