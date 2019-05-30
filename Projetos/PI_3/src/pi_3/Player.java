@@ -87,4 +87,12 @@ public class Player implements GameObject{
         camera.x = playerRectangle.x - (camera.w / 2);
         camera.y = playerRectangle.y - (camera.h / 2);
     }
+    
+    public int getX() {
+        return ((playerRectangle.x / (16*3 )));
+    }
+    
+    public int getY(){
+        return ((playerRectangle.y / (16*3 )));
+    }
 }

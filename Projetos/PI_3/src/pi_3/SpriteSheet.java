@@ -24,7 +24,6 @@ public class SpriteSheet {
     public void loadSprites(int spriteSizeX, int spriteSizeY) {
         this.spriteSizeX = spriteSizeX;
         loadedSprites = new Sprite[(SIZEX / spriteSizeX) * (SIZEY / spriteSizeY)];
-        System.out.println(SIZEX);
         int spriteID = 0;
         for(int y = 0; y < SIZEY; y += spriteSizeY)
         {

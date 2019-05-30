@@ -31,7 +31,6 @@ public class Tiles {
     }
     
     public void RenderTile(int tileID, RenderHandler render, int posX, int posY, int xZoom, int yZoom) {
-        System.out.println(tileList.size());
         if (tileID >= 0 && tileList.size() > tileID) {
             render.renderSprite(tileList.get(tileID).sprite, posX, posY, xZoom, yZoom);
         } else {

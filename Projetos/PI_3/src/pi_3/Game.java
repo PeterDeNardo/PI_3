@@ -22,7 +22,7 @@ public class Game extends JFrame implements Runnable {
     public static int alpha = 0xFFACC58B;
 
     private Canvas canvas = new Canvas();
-    private RenderHandler renderer;
+    private static RenderHandler renderer;
     
     private SpriteSheet sheet;
     private SpriteSheet playerSheet;
@@ -93,11 +93,12 @@ public class Game extends JFrame implements Runnable {
         tiles = new Tiles(testFile, sheet);
 
         map = new Map(new File("./src/pi_3/Map.txt"),tiles);
-    
         //Objetos
         objects = new GameObject[1];
         player = new Player(playerAnimations);
         objects[0] = player;
+        AEstrela a = new AEstrela();
+        a.aEstrela(map.getMap().get(5), map.getMap().get(29), map);
         
         //Add Listeners
         canvas.addKeyListener(keyListener);
@@ -156,7 +157,7 @@ public class Game extends JFrame implements Runnable {
         for (int i = 0; i < objects.length; i++) {
             objects[i].render(renderer, xZoom, yZoom);
         }
-        
+        System.out.println(player.getX() + " " + player.getY());
         renderer.render(graphics);
 
         graphics.dispose();
@@ -204,7 +205,7 @@ public class Game extends JFrame implements Runnable {
         return mouseListener;
     }
     
-    public RenderHandler getRender() {
+    public static RenderHandler getRender() {
         return renderer;
     }
 }
