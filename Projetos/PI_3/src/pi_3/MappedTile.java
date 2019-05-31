@@ -15,6 +15,11 @@ public class MappedTile {
         this.x = x;
         this.y = y;
     }
+    
+    public MappedTile(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
 
     public void setId(int id) {
         this.id = id;

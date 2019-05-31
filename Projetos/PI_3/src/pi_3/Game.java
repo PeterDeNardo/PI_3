@@ -26,6 +26,7 @@ public class Game extends JFrame implements Runnable {
     
     private SpriteSheet sheet;
     private SpriteSheet playerSheet;
+    private SpriteSheet enemySheet;
 
     private Rectangle testRectangle = new Rectangle(30, 30, 100, 100);
 
@@ -38,6 +39,7 @@ public class Game extends JFrame implements Runnable {
     private GameObject objects[];
     
     private Player player;
+    private Enemy enemy;
     
     private int xZoom = 3;
     private int yZoom = 3;
@@ -78,9 +80,17 @@ public class Game extends JFrame implements Runnable {
         playerSheet = new SpriteSheet(playerSheetImage);
         playerSheet.loadSprites(16, 16);
         
+        File file3 = new File("Sprites.png");
+        String path3 = file2.getPath();
+        BufferedImage enemySheetImage = loadImage(path2);
+        
+        enemySheet = new SpriteSheet(enemySheetImage);
+        enemySheet.loadSprites(16, 16);
+        
         
         //Player Animated Sprites
         AnimatedSprite playerAnimations = new AnimatedSprite(playerSheet, 10);
+        AnimatedSprite enemyAnimations = new AnimatedSprite(enemySheet, 10);
 
         // Load Map and Tiles
         File testFile = new File("./src/pi_3/Tiles.txt");
@@ -94,9 +104,11 @@ public class Game extends JFrame implements Runnable {
 
         map = new Map(new File("./src/pi_3/Map.txt"),tiles);
         //Objetos
-        objects = new GameObject[1];
+        objects = new GameObject[2];
         player = new Player(playerAnimations);
+        enemy = new Enemy(enemyAnimations);
         objects[0] = player;
+        objects[1] = enemy;
         AEstrela a = new AEstrela();
         a.aEstrela(map.getMap().get(5), map.getMap().get(29), map);
         
@@ -157,7 +169,7 @@ public class Game extends JFrame implements Runnable {
         for (int i = 0; i < objects.length; i++) {
             objects[i].render(renderer, xZoom, yZoom);
         }
-        System.out.println(player.getX() + " " + player.getY());
+  
         renderer.render(graphics);
 
         graphics.dispose();
