@@ -15,9 +15,7 @@ public class Map {
     private Tiles tileSet;
     private int fillTileID = -1;
     private File mapFile;
-    
-    private static int linhas = 5;
-    private static int colunas = 6;
+  
     private static ArrayList<MappedTile> mappedTiles = new ArrayList<MappedTile>();
     private HashMap<Integer, String> comments = new HashMap<Integer, String>();
 
@@ -174,87 +172,6 @@ public class Map {
             MappedTile mappedTile = mappedTiles.get(tileIndex);
             tileSet.RenderTile(mappedTile.tileId, render, mappedTile.x * tileWidth, mappedTile.y * tileHeight, xZoom, yZoom);
         }
-    }
-    
-    public static void configuraMapa()
-    {
-        for(MappedTile no: mappedTiles)
-        {
-            System.out.println(no.getId());
-            //no.vizinhos.addAll(acharCantos(no));
-            no.vizinhos.addAll(acharOrtogonais(no));
-        }
-    }
-    
-    public static List<MappedTile> acharCantos(MappedTile no)
-    {
-        int id = no.getId();
-        List<MappedTile> list = new ArrayList();
-        
-        //calcular linha
-        int linhaDoNo = (no.getId()/linhas)+1;
-        System.out.println((no.getId()/linhas)+1);
-        //calcula coluna
-        int colunaDoNo = (no.getId()%colunas)+1;
-            
-        //pega canto superior esquerda
-        if (linhaDoNo > 1 && colunaDoNo > 1) {
-            list.add(mappedTiles.get((id - colunas) - 1));
-        }
-        System.out.println((id - colunas) - 1);
-        //pega canto superior direita
-        if (linhaDoNo > 1 && colunaDoNo < colunas) {
-            list.add(mappedTiles.get((id - colunas) + 1));
-        }
-        
-        //pegar canto infoerior esquerdo
-        if (linhaDoNo < mappedTiles.size() / linhas && colunaDoNo > 1) {
-            list.add(mappedTiles.get((id + colunas) - 1));
-        }
-        //pegar canto inferior direito
-        if (linhaDoNo < mappedTiles.size() / linhas && colunaDoNo < colunas) {
-            list.add(mappedTiles.get((id + colunas) + 1));
-        }
-
-        return list;
-    }
-    
-    public static List<MappedTile> acharOrtogonais (MappedTile no)
-    {   
-        //calcular linha
-        int linhaDoNo = (no.getId()/linhas)+1;
-        //calcula coluna
-        int colunaDoNo = (no.getId()%colunas)+1;
-        List<MappedTile> list = new ArrayList();
-        int id = no.getId();
-        //pegar vizinho esquerdo
-        if (colunaDoNo > 1) {
-            list.add(mappedTiles.get(id - 1));
-        }
-        //pegar vizinho direito
-       	if (colunaDoNo < colunas) {
-            list.add(mappedTiles.get(id + 1));
-        }
-        //pegar vizinho cima
-        if (linhaDoNo > 1) {
-            list.add(mappedTiles.get((id - linhas)+1));
-        }
-        //pegar vizinho baixo
-        if (linhaDoNo < mappedTiles.size()/linhas - 1) {
-            System.out.println(mappedTiles.size() +" "+ linhas);
-            System.out.println(linhaDoNo +" "+  mappedTiles.size()/linhas);
-            list.add(mappedTiles.get(id + colunas));
-        }
-        
-        return list;
-    }
-    
-    public int getColunas() {
-        return colunas;
-    }
-    
-    public int getLinhas() {
-        return linhas;
     }
     
     public ArrayList<MappedTile> getMap() {

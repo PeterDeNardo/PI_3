@@ -109,9 +109,6 @@ public class Game extends JFrame implements Runnable {
         enemy = new Enemy(enemyAnimations);
         objects[0] = player;
         objects[1] = enemy;
-        AEstrela a = new AEstrela();
-        a.aEstrela(map.getMap().get(5), map.getMap().get(29), map);
-        
         //Add Listeners
         canvas.addKeyListener(keyListener);
         canvas.addFocusListener(keyListener);
@@ -219,5 +216,10 @@ public class Game extends JFrame implements Runnable {
     
     public static RenderHandler getRender() {
         return renderer;
+    }
+    
+    public int[] getPlayerPositon() {
+        int[] pos = {player.getX(), player.getY()};
+        return pos;
     }
 }

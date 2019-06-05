@@ -45,6 +45,10 @@ public class MappedTile {
         return vizinhos;
     }
 
+    public int getTileId() {
+        return tileId;
+    }
+    
     public int getId() {
         return id;
     }

@@ -10,7 +10,9 @@ import java.util.List;
 
 public class Enemy extends Character implements GameObject{
     
-    ArrayList<MappedTile> viewRange = new ArrayList<>();
+    ArrayList<MappedTile> viewRangeTiles = new ArrayList<>();
+    ArrayList<MappedTile> pathTiles = new ArrayList<>();
+    ViewRange viewRangeMap;
     
     public Enemy(Sprite sprite) {
         super(sprite);
@@ -30,35 +32,58 @@ public class Enemy extends Character implements GameObject{
     {
         if (i != 0) {
           createRange();
-          System.out.println(getX() + " " + getY());
           i = 0;
         }
+        detectPlayer(game.getPlayerPositon()[0], game.getPlayerPositon()[1]);
     }
     
     public void createRange() {
-        int posX = getX();
-        int posY = getY();
+        int X = getX();
+        int Y = getY();
         
         int mutiplier = 1;
-        for(int i = 0; i < 1; i++) {
+        for(int i = 0; i < 3; i++) {
             mutiplier += 2;
         }
         
         int range = mutiplier;
-        posY += ((mutiplier - 1) / 2);
+        int x = X;
+        int y = Y;
+        int id = 0;
+        y += ((mutiplier - 1) / 2);
         for(int i = 0; i < range; i++) {
             for(int j = 0; j < range; j++) {
                 if (j == 0) {
-                    posX -= ((mutiplier - 1) / 2);
+                    x -= ((mutiplier - 1) / 2);
                 }
-                System.out.print(posX + " " + posY + " :: ");
-                posX++;
+                System.out.print(x + " " + y + " :: ");
+                MappedTile tile = new MappedTile(id, x, y);
+                System.out.print(id + "... |");
+                viewRangeTiles.add(tile);
+                x++;
+                id++;
             }
             System.out.println("");
-            posX = 0;
-            posY--;
+            x = X;
+            y--;
         }
         
+        viewRangeMap = new ViewRange(viewRangeTiles);
+    }
+    
+    public void detectPlayer(int playerX, int playerY) {
+        for(int i = 0; i < viewRangeTiles.size(); i++) {
+            if (viewRangeTiles.get(i).x == playerX && viewRangeTiles.get(i).y == playerY) {
+                AEstrela a = new AEstrela();
+                pathTiles = (ArrayList<MappedTile>) a.aEstrela(viewRangeTiles.get(25),
+                                    viewRangeTiles.get(i),
+                                    viewRangeMap);
+                
+                for(int j = 0; j < pathTiles.size(); j++) {
+                    System.out.println(pathTiles.get(j));
+                }
+            }
+        }
     }
 }
     

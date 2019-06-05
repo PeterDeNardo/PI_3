@@ -11,7 +11,7 @@ package pi_3;
  */
 public class Teste {
     public static void main(String[] args) {
-        int X = -1;
+        int X = -41;
         int Y = -3;
         
         int mutiplier = 1;
@@ -20,18 +20,20 @@ public class Teste {
         }
         
         int range = mutiplier;
-        Y += ((mutiplier - 1) / 2);
+        int x = X;
+        int y = Y;
+        y += ((mutiplier - 1) / 2);
         for(int i = 0; i < range; i++) {
             for(int j = 0; j < range; j++) {
                 if (j == 0) {
-                    X -= ((mutiplier - 1) / 2);
+                    x -= ((mutiplier - 1) / 2);
                 }
-                System.out.print(X + " " + Y + " :: ");
-                X++;
+                System.out.print(x + " " + y + " :: ");
+                x++;
             }
             System.out.println("");
-            X = 0;
-            Y--;
+            x = X;
+            y--;
             
         }
         

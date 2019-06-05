@@ -14,8 +14,7 @@ public class AEstrela {
     public static int linhasDoMapa = 0;
     public static int tamanhoDoMapa = 0;
    
-    public static List<MappedTile> aEstrela(MappedTile tileInicial, MappedTile tileDestino, Map map)
-    {
+    public static List<MappedTile> aEstrela(MappedTile tileInicial, MappedTile tileDestino, ViewRange map){
         colunasDoMapa = map.getColunas();
         linhasDoMapa = map.getLinhas();
         tamanhoDoMapa = map.getMap().size();
@@ -34,8 +33,6 @@ public class AEstrela {
             listaAberta.remove(noAtual);
             listaFechada.add(noAtual);
             achouCaminho = noAtual.equals(tileDestino);
-            System.out.println(noAtual.getId());
-            System.out.println(noAtual.getVizinhos());
             for(MappedTile no: noAtual.getVizinhos())
             {
                 if(no.estaBloqueado() || listaFechada.contains(no))
@@ -71,6 +68,7 @@ public class AEstrela {
         
         return montaCaminho(tileInicial, tileDestino, map);
     }
+    
     public static MappedTile procularMenorF() {
         Collections.sort(listaAberta, Comparator.comparing(MappedTile::getF));
         return listaAberta.get(0);
@@ -82,6 +80,7 @@ public class AEstrela {
         return no.getG()+ no.getH();
 
     }
+    
     public static float calcularG(MappedTile noAtual, MappedTile noVizinho)
     {
         if (noVizinho.getId() % colunasDoMapa == noAtual.getId() % colunasDoMapa || noVizinho.getId() + 1 == noAtual.getId() || noVizinho.getId() - 1 == noAtual.getId()) {
@@ -91,6 +90,7 @@ public class AEstrela {
         }
         
     }
+    
     public static float calcularH(MappedTile noAtual, MappedTile noDestino)
     {
         int posicaoDestinoX = (noDestino.getId()%colunasDoMapa)+1;
@@ -107,7 +107,8 @@ public class AEstrela {
                 
         return distanciaTotal;
     }
-    private static List<MappedTile> montaCaminho(MappedTile noInicial, MappedTile noDestino, Map map) {
+    
+    private static List<MappedTile> montaCaminho(MappedTile noInicial, MappedTile noDestino, ViewRange map) {
         List<MappedTile> listaAuxiliar = new ArrayList();
         MappedTile noAtual = noDestino;
         int contador = 0;
@@ -126,7 +127,7 @@ public class AEstrela {
         System.out.println("Caminho: ");
         for(MappedTile no: listaAuxiliar)
         {
-            System.out.print(" -> " + no.getId());
+            System.out.print(" -> " + no.getTileId());
         }
         //inicio artificio apenas para printar caminho
         for(MappedTile no: map.getMap())
@@ -144,7 +145,7 @@ public class AEstrela {
         return listaAuxiliar;
     }
     
-    public static void desenha(Map map){
+    public static void desenha(ViewRange map){
       System.out.println("");
       for (int i = 0; i<map.getLinhas(); i++)
         {
