@@ -53,4 +53,7 @@ public class Character {
     public int getY(){
         return ((characterRectangle.y / (16*3 )));
     }
+    
+    
+    
 }

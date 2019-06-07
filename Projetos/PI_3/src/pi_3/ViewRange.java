@@ -13,8 +13,8 @@ import java.util.List;
  * @author peterdenardo
  */
 public class ViewRange {
-    private static int linhas = 7;
-    private static int colunas = 7;
+    private static int linhas = 3;
+    private static int colunas = 3;
     private static ArrayList<MappedTile> mappedTiles = new ArrayList<MappedTile>();
     
     public ViewRange(ArrayList<MappedTile> mapArray) {

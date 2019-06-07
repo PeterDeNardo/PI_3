@@ -37,12 +37,15 @@ public class Enemy extends Character implements GameObject{
         detectPlayer(game.getPlayerPositon()[0], game.getPlayerPositon()[1]);
     }
     
-    public void createRange() {
+    private void createRange() {
         int X = getX();
         int Y = getY();
         
-        int mutiplier = 1;
-        for(int i = 0; i < 3; i++) {
+        viewRangeTiles.clear();
+        viewRangeMap = null;
+
+                int mutiplier = 1;
+        for(int i = 0; i < 1; i++) {
             mutiplier += 2;
         }
         
@@ -71,20 +74,28 @@ public class Enemy extends Character implements GameObject{
         viewRangeMap = new ViewRange(viewRangeTiles);
     }
     
-    public void detectPlayer(int playerX, int playerY) {
+    private void detectPlayer(int playerX, int playerY) {
         for(int i = 0; i < viewRangeTiles.size(); i++) {
             if (viewRangeTiles.get(i).x == playerX && viewRangeTiles.get(i).y == playerY) {
                 AEstrela a = new AEstrela();
-                pathTiles = (ArrayList<MappedTile>) a.aEstrela(viewRangeTiles.get(25),
+                pathTiles = (ArrayList<MappedTile>) a.aEstrela(viewRangeTiles.get(5),
                                     viewRangeTiles.get(i),
                                     viewRangeMap);
-                
                 for(int j = 0; j < pathTiles.size(); j++) {
-                    System.out.println(pathTiles.get(j));
+                    walk(pathTiles.get(j));
                 }
             }
         }
+        pathTiles.clear();
     }
+    
+    private void walk(MappedTile next) {
+        this.characterRectangle.x += next.x;
+        this.characterRectangle.y += next.y;
+        createRange();
+    }
+    
+    
 }
     
  
