@@ -5,9 +5,10 @@ import java.util.List;
 
 public class MappedTile {
     public int id, tileId, x, y;
-    private float h, g, f;
+    private int h, g, f;
     private boolean bloqueado, visitado;
     private MappedTile pai;
+    protected static final int MOVEMENT_COST = 10;
     public  List<MappedTile> vizinhos = new ArrayList();
 
     public MappedTile(int tileId, int x, int y) {
@@ -53,7 +54,7 @@ public class MappedTile {
         return id;
     }
 
-    public boolean estaBloqueado() {
+    public boolean getBloqueado() {
         return bloqueado;
     }
 
@@ -81,23 +82,61 @@ public class MappedTile {
         return h;
     }
 
-    public void setH(float h) {
-        this.h = h;
-    }
+    public void setG(MappedTile parent)
+	{
+		g = (parent.getG() + MOVEMENT_COST);
+	}
 
-    public float getG() {
-        return g;
-    }
-
-    public void setG(float g) {
+    public void setG(int g) {
         this.g = g;
     }
 
     public float getF() {
-        return f;
+        return g + h;
     }
 
-    public void setF(float f) {
+    public void setF(int f) {
         this.f = f;
+    }
+    
+    public int calculateG(MappedTile parent)
+	{
+		return (parent.getG() + MOVEMENT_COST);
+	}
+    
+    public void setH(MappedTile goal)
+	{
+		h = (Math.abs(getX() - goal.getX()) + Math.abs(getY() - goal.getY())) * MOVEMENT_COST;
+	}
+    
+    public MappedTile getParent()
+	{
+		return pai;
+	}
+    
+    public void setParent(MappedTile parent)
+    {
+            this.pai = parent;
+    }
+    
+    public int getG()
+	{
+		return g;
+	}
+    
+    @Override
+    public boolean equals(Object o)
+    {
+            if (o == null)
+                    return false;
+            if (!(o instanceof MappedTile))
+                    return false;
+            if (o == this)
+                    return true;
+
+            MappedTile n = (MappedTile) o;
+            if (n.getX() == x && n.getY() == y && n.getBloqueado() == bloqueado)
+                    return true;
+            return false;
     }
 }

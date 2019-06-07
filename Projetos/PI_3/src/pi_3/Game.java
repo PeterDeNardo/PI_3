@@ -22,7 +22,7 @@ public class Game extends JFrame implements Runnable {
     public static int alpha = 0xFFACC58B;
 
     private Canvas canvas = new Canvas();
-    private static RenderHandler renderer;
+    public static RenderHandler renderer;
     
     private SpriteSheet sheet;
     private SpriteSheet playerSheet;

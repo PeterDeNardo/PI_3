@@ -6,12 +6,13 @@
 package pi_3;
 
 import java.util.ArrayList;   
+import java.util.LinkedList;  
 import java.util.List;
 
 public class Enemy extends Character implements GameObject{
     
     ArrayList<MappedTile> viewRangeTiles = new ArrayList<>();
-    ArrayList<MappedTile> pathTiles = new ArrayList<>();
+    LinkedList<MappedTile> pathTiles = new LinkedList<>();
     ViewRange viewRangeMap;
     
     public Enemy(Sprite sprite) {
@@ -77,12 +78,13 @@ public class Enemy extends Character implements GameObject{
     private void detectPlayer(int playerX, int playerY) {
         for(int i = 0; i < viewRangeTiles.size(); i++) {
             if (viewRangeTiles.get(i).x == playerX && viewRangeTiles.get(i).y == playerY) {
-                AEstrela a = new AEstrela();
-                pathTiles = (ArrayList<MappedTile>) a.aEstrela(viewRangeTiles.get(5),
-                                    viewRangeTiles.get(i),
-                                    viewRangeMap);
+                System.out.println(2);
+                pathTiles = (LinkedList<MappedTile>) viewRangeMap.findPath(viewRangeTiles.get(5).x, viewRangeTiles.get(5).y,playerX, playerY);
+                System.out.println(pathTiles);
                 for(int j = 0; j < pathTiles.size(); j++) {
-                    walk(pathTiles.get(j));
+                    System.out.println(1);
+                    System.out.println(pathTiles.get(j));
+                    //walk(pathTiles.get(j));
                 }
             }
         }
