@@ -22,7 +22,7 @@ public class Enemy extends Character implements GameObject{
             animatedSprite = (AnimatedSprite) sprite;
 
         updateDirection();
-        characterRectangle = new Rectangle(-90, -150, 20, 26);
+        characterRectangle = new Rectangle(0, 0, 20, 26);
         characterRectangle.generateGraphics(3, 0xFF00FF90);
 //        startingPoint = characterRectangle.x;
 //        endingPoint = startingPoint + 100;
@@ -79,22 +79,23 @@ public class Enemy extends Character implements GameObject{
         for(int i = 0; i < viewRangeTiles.size(); i++) {
             if (viewRangeTiles.get(i).x == playerX && viewRangeTiles.get(i).y == playerY) {
                 System.out.println(2);
-                pathTiles = (LinkedList<MappedTile>) viewRangeMap.findPath(viewRangeTiles.get(5).x, viewRangeTiles.get(5).y,playerX, playerY);
+                pathTiles.clear();
+                pathTiles = (LinkedList<MappedTile>) viewRangeMap.findPath(viewRangeTiles.get(4), viewRangeTiles.get(i));
                 System.out.println(pathTiles);
                 for(int j = 0; j < pathTiles.size(); j++) {
-                    System.out.println(1);
-                    System.out.println(pathTiles.get(j));
-                    //walk(pathTiles.get(j));
+//                    System.out.println(1);
+//                    System.out.println(pathTiles.get(j).id);
+                    walk(pathTiles.get(j));
                 }
             }
+            
         }
-        pathTiles.clear();
+        createRange();
     }
     
     private void walk(MappedTile next) {
         this.characterRectangle.x += next.x;
         this.characterRectangle.y += next.y;
-        createRange();
     }
     
     

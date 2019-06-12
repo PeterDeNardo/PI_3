@@ -26,7 +26,8 @@ public class ViewRange {
         int cont = 0;
         for(int i = 0; i < linhas; i++) {
             for(int j = 0; j < colunas; j++) {
-                System.out.print(mappedTiles.get(cont));
+                mappedTiles.get(cont).setId(cont);
+                System.out.println("ÓOOO : " + mappedTiles.get(cont).id);
                 nodes[i][j] = mappedTiles.get(0);
                 cont++;
             }
@@ -34,11 +35,11 @@ public class ViewRange {
         configuraTiles();
     }
     
-    public final List<MappedTile> findPath(int startX, int startY, int goalX, int goalY)
+    public final List<MappedTile> findPath(MappedTile s, MappedTile g)
 	{
 		// If our start position is the same as our goal position ...
             System.out.println(5);
-		if (startX == goalX && startY == goalY)
+		if (s.x == g.x && s.y == g.y)
 		{
                     System.out.println(7);
 			// Return an empty path, because we don't need to move at all.
@@ -51,20 +52,18 @@ public class ViewRange {
 		List<MappedTile> closedList = new LinkedList<MappedTile>();
 
 		// Add starting node to open list.
-                System.out.println(startX + "  " +startY );
 //                for(int i = 0; i < linhas; i++) {
 //                    for(int j = 0; j < colunas; j++) {
 //                        System.out.print(mappedTiles.get(cont));
 //                        cont++;
 //                    }
 //                }
-		openList.add(nodes[startX][startY]);
+		openList.add(s);
 
 		// This loop will be broken as soon as the current node position is
 		// equal to the goal position.
 		while (true)
 		{
-                    System.out.println(6);
 			// Gets node with the lowest F score from open list.
 			MappedTile current = lowestFInList(openList);
 			// Remove current node from open list.
@@ -73,35 +72,36 @@ public class ViewRange {
 			closedList.add(current);
 
 			// If the current node position is equal to the goal position ...
-			if ((current.getX() == goalX) && (current.getY() == goalY))
+			if ((current.getX() == g.x) && (current.getY() == g.y))
 			{
 				// Return a LinkedList containing all of the visited nodes.
-				return calcPath(nodes[startX][startY], current);
+				return calcPath(s, current);
 			}
 
 			List<MappedTile> adjacentNodes = getAdjacent(current, closedList);
-			for (MappedTile adjacent : adjacentNodes)
+                        System.out.print(adjacentNodes.size());
+			for (int i = 0; i < adjacentNodes.size(); i++)
 			{
 				// If node is not in the open list ...
-				if (!openList.contains(adjacent))
+				if (!openList.contains(adjacentNodes.get(i)))
 				{
 					// Set current node as parent for this node.
-					adjacent.setParent(current);
+					adjacentNodes.get(i).setParent(current);
 					// Set H costs of this node (estimated costs to goal).
-					adjacent.setH(nodes[goalX][goalY]);
+					adjacentNodes.get(i).setH(g);
 					// Set G costs of this node (costs from start to this node).
-					adjacent.setG(current);
+					adjacentNodes.get(i).setG(current);
 					// Add node to openList.
-					openList.add(adjacent);
+					openList.add(adjacentNodes.get(i));
 				}
 				// Else if the node is in the open list and the G score from
 				// current node is cheaper than previous costs ...
-				else if (adjacent.getG() > adjacent.calculateG(current))
+				else if (adjacentNodes.get(i).getG() > adjacentNodes.get(i).calculateG(current))
 				{
 					// Set current node as parent for this node.
-					adjacent.setParent(current);
+					adjacentNodes.get(i).setParent(current);
 					// Set G costs of this node (costs from start to this node).
-					adjacent.setG(current);
+					adjacentNodes.get(i).setG(current);
 				}
 			}
 
@@ -134,60 +134,64 @@ public class ViewRange {
 		int x = node.getX();
 		int y = node.getY();
 
-		MappedTile adjacent;
-
-		// Check left node
-		if (x > 0)
-		{
-			adjacent = getNode(x - 1, y);
-			if (adjacent != null && adjacent.getBloqueado() && !closedList.contains(adjacent))
-			{
-				adjacentNodes.add(adjacent);
-			}
-		}
-
-		// Check right node
-		if (x < width)
-		{
-			adjacent = getNode(x + 1, y);
-			if (adjacent != null && adjacent.getBloqueado() && !closedList.contains(adjacent))
-			{
-				adjacentNodes.add(adjacent);
-			}
-		}
-
-		// Check top node
-		if (y > 0)
-		{
-			adjacent = this.getNode(x, y - 1);
-			if (adjacent != null && adjacent.getBloqueado() && !closedList.contains(adjacent))
-			{
-				adjacentNodes.add(adjacent);
-			}
-		}
-
-		// Check bottom node
-		if (y < height)
-		{
-			adjacent = this.getNode(x, y + 1);
-			if (adjacent != null && adjacent.getBloqueado() && !closedList.contains(adjacent))
-			{
-				adjacentNodes.add(adjacent);
-			}
-		}
+		//MappedTile adjacent;
+                
+                for(int i = 0; i < mappedTiles.size(); i++) {
+                    adjacentNodes.addAll(acharCantos(mappedTiles.get(i)));
+                    adjacentNodes.addAll(acharOrtogonais(mappedTiles.get(i)));
+                }
+//
+//		// Check left node
+//		if (x > 0)
+//		{
+//			adjacent = getNode(x - 1, y);
+//			if (adjacent != null && adjacent.getBloqueado() && !closedList.contains(adjacent))
+//			{
+//				adjacentNodes.add(adjacent);
+//			}
+//		}
+//
+//		// Check right node
+//		if (x < width)
+//		{
+//			adjacent = getNode(x + 1, y);
+//			if (adjacent != null && adjacent.getBloqueado() && !closedList.contains(adjacent))
+//			{
+//				adjacentNodes.add(adjacent);
+//			}
+//		}
+//
+//		// Check top node
+//		if (y > 0)
+//		{
+//			adjacent = this.getNode(x, y - 1);
+//			if (adjacent != null && adjacent.getBloqueado() && !closedList.contains(adjacent))
+//			{
+//				adjacentNodes.add(adjacent);
+//			}
+//		}
+//
+//		// Check bottom node
+//		if (y < height)
+//		{
+//			adjacent = this.getNode(x, y + 1);
+//			if (adjacent != null && adjacent.getBloqueado() && !closedList.contains(adjacent))
+//			{
+//				adjacentNodes.add(adjacent);
+//			}
+//		}
 		return adjacentNodes;
 	}
     
     public MappedTile getNode(int x, int y)
 	{
-		if (x >= 0 && x < width && y >= 0 && y < height)
+            for(int i = 0; i < mappedTiles.size(); i++) {
+		if (mappedTiles.get(i).x == x && mappedTiles.get(i).y == y)
 		{
-			return nodes[x][y];
+			return mappedTiles.get(i);
 		}
-		else
-		{
-			return null;
-		}
+            }
+        return null;
 	}
     
     private List<MappedTile> calcPath(MappedTile start, MappedTile goal)
